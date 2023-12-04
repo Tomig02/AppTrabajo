@@ -42,7 +42,7 @@
         "js_bundles": [
             {
                 "name": "background",
-                "src": "./src/**/*.js"
+                "src": "./src/*.js"
             }
         ]
     }
