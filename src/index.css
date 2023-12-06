@@ -1,5 +1,5 @@
 body{
-    width: 700px;
+    width: 400px;
     padding: 20px;
     border: 1px solid black;
 
@@ -16,7 +16,25 @@ body{
 }
 .Image-Container{
     margin-top: 20px;
-    width: 100%;
+    width: 80%;
     padding: 10px;
     border: 1px solid black;
+
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.img-queue-item{
+    padding: 7px;
+    height: 120px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.img-queue-item img{
+    height: 100%;
+    max-width: 70%;
+    object-fit: cover;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }

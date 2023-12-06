@@ -39,11 +39,32 @@
         }
     },
     "xtbuild": {
+        "copyAsIs": [
+            "./src/popupJS/jspdf.umd.min.js"
+        ],
         "js_bundles": [
             {
                 "name": "background",
                 "src": "./src/*.js"
+            },
+            {
+                "name": "popup",
+                "src": "./src/popupJS/popup.js"
+            },
+            {
+                "name": "print",
+                "src": "./src/popupJS/print.js"
             }
-        ]
+
+        ],
+        "scss_bundles": [
+            {
+                "name": "index",
+                "src": "./src/*.css" 
+            }
+          ]
+    },
+    "dependencies": {
+        "jspdf": "^2.5.1"
     }
 }

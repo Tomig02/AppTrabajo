@@ -1,5 +1,9 @@
+//import jsPDF from "jspdf";
 
-console.log(chrome.contextMenus.onClickData);
+chrome.storage.local.set({ urlList: null});
+let addedImages = 0;
+let imgUrlList = [];
+
 chrome.contextMenus.onClicked.addListener(genericOnClick);
 function genericOnClick(info){
     //needed data info.srcUrl (image file url)
@@ -10,29 +14,53 @@ function genericOnClick(info){
 
     //how to print: https://stackoverflow.com/questions/24190553/google-chrome-extension-cannot-launch-print-dialog
 
-    console.log(info);
-
-    switch (info.menuItemId) {
-        case "AgregarCola":
-            chrome.runtime.sendMessage({type: "group", imageSrc: info.srcUrl});
-            break;
-        case "ImprimirUno":
-            chrome.runtime.sendMessage({type: "solo", imageSrc: info.srcUrl});
-            break;
-    } 
+    if(info.menuItemId == "AgregarCola"){
+        imgUrlList.push(info.srcUrl)
+        chrome.storage.local.set({ urlList : imgUrlList})
+    }
 }
 
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.cmd === 'openTab') {
+        chrome.tabs.create({url: msg.url}, createdTab => {
+            chrome.tabs.onUpdated.addListener(function _(tabId1, info, tab) {
+                console.log(tabId1 === createdTab.id, info.url);
+                if (tabId1 === createdTab.id) {
+                    chrome.tabs.onUpdated.removeListener(_);
+                    console.log("message received")
 
-chrome.runtime.onInstalled.addListener(function () {
+                    /*chrome.tabs.executeScript(tabId, {file: 'print.js'}, function() {
+                        chrome.tabs.sendMessage(tabId, document = msg.document);
+                    });
+                    chrome.tabs.executeScript(tabId, {file: msg.script});*/
+                    chrome.storage.local.set({ doc: msg.document }, () => {
+                        chrome.scripting.executeScript({
+                            target: {tabId: tabId1, allFrames: true},
+                            files: ['print.js'],
+                        });
+                    })
+                    
+
+                    //startPrintSignal(msg.document);
+                }
+            });
+        });
+    }
+});
+
+function startPrintSignal( doc ){
+    console.log(doc);
+    chrome.runtime.sendMessage({
+        cmd: 'startPrint',
+        //document: doc
+    });
+}
+
+self.addEventListener('install', function(event){
     context = "image";
     chrome.contextMenus.create({
         title: "Imprimir Uno",
         contexts: ["image"],
-        id: "ImprimirUno"
-    });
-    chrome.contextMenus.create({
-        title: "Agregar a impresion",
-        contexts: ["image"],
         id: "AgregarCola"
     });
-})
+});

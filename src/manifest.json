@@ -8,9 +8,14 @@
     "manifest_version": 3,
     "default_locale": "en",
     "minimum_chrome_version": "88",
+    "host_permissions": [
+        "https://www.google.com/"
+    ],
     "permissions": [
         "contextMenus",
-        "activeTab"
+        "activeTab",
+        "storage",
+        "scripting" 
     ],
     "icons": {
         "128": "assets/img/128x128.png"
@@ -27,4 +32,5 @@
         },
         "default_title": "__MSG_appName__"
     }
+    
 }
