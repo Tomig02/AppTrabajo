@@ -50,12 +50,7 @@
             {
                 "name": "popup",
                 "src": "./src/popupJS/popup.js"
-            },
-            {
-                "name": "print",
-                "src": "./src/popupJS/print.js"
             }
-
         ],
         "scss_bundles": [
             {
