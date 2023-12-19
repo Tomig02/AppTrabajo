@@ -89,3 +89,27 @@ body{
     object-fit: cover;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
+
+.input-row{
+    font-size: 1.5em;
+    margin: none;
+}
+.input-row p{
+    margin-bottom: 00.2em;
+    font-weight: bold;
+}
+.input-options{
+    display: flex;
+    align-items: center;
+}
+.input-options input{
+    width: 20%;
+    height: 100%;
+    border-radius: none;
+    border: 2px solid rgb(85,162,255);
+}
+.input-options label {
+    margin-right: 0.5em;
+    margin-left: 1em;
+}
+

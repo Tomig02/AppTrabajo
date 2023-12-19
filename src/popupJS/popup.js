@@ -92,25 +92,59 @@ const doc = new window.jsPDF();
 let cantAdded = 0;
 let docHeight = doc.internal.pageSize.getHeight();
 let docWidth = doc.internal.pageSize.getWidth();
-const wVal = docWidth / 4;
-const hVal = 100;
+const wDefault = docWidth / 4;
+const hDefault = 100;
+const wVal = document.getElementById("Width");
+const hVal = document.getElementById("Height");
+
+chrome.storage.local.get( result => {
+    console.log(result.imgWidth);
+
+    if(result.imgWidth){ 
+        wVal.value = result.imgWidth;
+    }
+    else{ wVal.value = wDefault}
+});
+chrome.storage.local.get( result => {
+    console.log(result);
+
+    if(result.imgHeight){ 
+        hVal.value = result.imgHeight; 
+    }
+    else{ hVal.value = hDefault}
+});
 
 function handleData(data){
-    let xVal = wVal * cantAdded;
-    let yVal = docHeight - hVal;
+    if(! wVal.value == wDefault){
+        chrome.storage.local.set({imgWidth: wVal.value});
+    }
+    if(! hVal.value == hDefault){
+        chrome.storage.local.set({imgHeight: hVal.value});
+    }
 
-    doc.addImage(data, x = xVal, y = yVal, w = wVal, h = hVal);
+    sleep(400);
+    chrome.storage.local.get( result => {
+        console.log(result);
+    });
+
+    document.getElementById("Image-Container");
+    let xVal = wVal.value * cantAdded;
+    let yVal = 0;
+
+    doc.addImage(data, x = xVal, y = yVal, w = wVal.value, h = hVal.value);
     cantAdded++;
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function printPDF(){
+    chrome.storage.local.set({urlList: null});
+    showEmpty();
+
     await sleep(1000);
+    
     doc.save("result.pdf");
-    button.disabled = false;
 
     items = [];
     imgContainer.innerHTML = "";
-    chrome.storage.local.set({urlList: null});
-    showEmpty();
+    button.disabled = false;
 } 
