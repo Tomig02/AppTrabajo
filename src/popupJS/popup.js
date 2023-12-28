@@ -115,10 +115,10 @@ chrome.storage.local.get( result => {
 });
 
 function handleData(data){
-    if(! wVal.value == wDefault){
+    if( !(wVal.value == wDefault) ){
         chrome.storage.local.set({imgWidth: wVal.value});
     }
-    if(! hVal.value == hDefault){
+    if( !(hVal.value == hDefault) ){
         chrome.storage.local.set({imgHeight: hVal.value});
     }
 
