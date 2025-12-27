@@ -3,21 +3,15 @@
     "description": "Cosas",
     "version": "0.0.1",
     "homepage": "http://chrome.google.com/webstore",
-    "author": "ENTER YOUR NAME HERE",
+    "author": "Tomig02",
     "repository": {
         "type": "git",
-        "url": "ENTER GIT REPO URL"
+        "url": "https://github.com/Tomig02/AppTrabajo"
     },
     "scripts": {
-        "start": "xt-build -e dev -w",
-        "start:firefox": "xt-build -e dev -p firefox -w",
-        "build": "xt-build -e prod",
-        "build:firefox": "xt-build -e prod -p firefox",
-        "clean": "xt-clean",
-        "docs": "xt-docs",
-        "test": "xt-test",
-        "coverage": "nyc --reporter=lcov npm run test",
-        "sync": "xt-sync"
+        "dev": "extension dev",
+        "build": "extension build",
+        "start": "extension start"
     },
     "babel": {
         "presets": [
@@ -27,39 +21,29 @@
     "eslintIgnore": [
         "test/**/*"
     ],
-    "devDependencies": {
-        "extension-cli": "latest"
-    },
-    "xtdocs": {
-        "source": {
-            "include": [
-                "README.md",
-                "src"
-            ]
-        }
-    },
     "xtbuild": {
-        "copyAsIs": [
-            "./src/popupJS/jspdf.umd.min.js"
-        ],
         "js_bundles": [
             {
                 "name": "background",
-                "src": "./src/*.js"
+                "src": "./src/background.js"
             },
             {
                 "name": "popup",
-                "src": "./src/popupJS/popup.js"
+                "src": "./src/popup/popup.js"
             }
         ],
         "scss_bundles": [
             {
                 "name": "index",
-                "src": "./src/*.css" 
+                "src": "./src/*.css"
             }
-          ]
+        ]
     },
     "dependencies": {
-        "jspdf": "^2.5.1"
+        "jspdf": "^3.0.4"
+    },
+    "devDependencies": {
+        "chrome-types": "^0.1.403",
+        "extension": "^2.1.3"
     }
 }
