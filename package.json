@@ -43,6 +43,7 @@
         "jspdf": "^3.0.4"
     },
     "devDependencies": {
+        "chrome-types": "^0.1.403",
         "extension": "^2.1.3"
     }
 }
