@@ -9,15 +9,9 @@
         "url": "ENTER GIT REPO URL"
     },
     "scripts": {
-        "start": "xt-build -e dev -w",
-        "start:firefox": "xt-build -e dev -p firefox -w",
-        "build": "xt-build -e prod",
-        "build:firefox": "xt-build -e prod -p firefox",
-        "clean": "xt-clean",
-        "docs": "xt-docs",
-        "test": "xt-test",
-        "coverage": "nyc --reporter=lcov npm run test",
-        "sync": "xt-sync"
+        "dev": "extension dev",
+        "build": "extension build",
+        "start": "extension start"
     },
     "babel": {
         "presets": [
@@ -27,9 +21,6 @@
     "eslintIgnore": [
         "test/**/*"
     ],
-    "devDependencies": {
-        "extension-cli": "latest"
-    },
     "xtdocs": {
         "source": {
             "include": [
@@ -55,11 +46,14 @@
         "scss_bundles": [
             {
                 "name": "index",
-                "src": "./src/*.css" 
+                "src": "./src/*.css"
             }
-          ]
+        ]
     },
     "dependencies": {
-        "jspdf": "^2.5.1"
+        "jspdf": "^3.0.4"
+    },
+    "devDependencies": {
+        "extension": "^2.1.3"
     }
 }
