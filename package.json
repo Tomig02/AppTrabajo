@@ -25,11 +25,11 @@
         "js_bundles": [
             {
                 "name": "background",
-                "src": "./src/*.js"
+                "src": "./src/background.js"
             },
             {
                 "name": "popup",
-                "src": "./src/popupJS/popup.js"
+                "src": "./src/popup/popup.js"
             }
         ],
         "scss_bundles": [
