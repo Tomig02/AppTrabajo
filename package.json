@@ -3,10 +3,10 @@
     "description": "Cosas",
     "version": "0.0.1",
     "homepage": "http://chrome.google.com/webstore",
-    "author": "ENTER YOUR NAME HERE",
+    "author": "Tomig02",
     "repository": {
         "type": "git",
-        "url": "ENTER GIT REPO URL"
+        "url": "https://github.com/Tomig02/AppTrabajo"
     },
     "scripts": {
         "dev": "extension dev",
@@ -21,18 +21,7 @@
     "eslintIgnore": [
         "test/**/*"
     ],
-    "xtdocs": {
-        "source": {
-            "include": [
-                "README.md",
-                "src"
-            ]
-        }
-    },
     "xtbuild": {
-        "copyAsIs": [
-            "./src/popupJS/jspdf.umd.min.js"
-        ],
         "js_bundles": [
             {
                 "name": "background",

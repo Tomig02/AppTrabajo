@@ -1,4 +1,4 @@
-if (!window.jsPDF ) {window.jsPDF = window.jspdf.jsPDF };
+import jsPDF from "jspdf";
 
 const imgContainer = document.getElementById("Image-Container");
 let items = []
@@ -88,7 +88,7 @@ function toDataURL(url, callback){
 }
 
 
-const doc = new window.jsPDF();
+const doc = new jsPDF();
 let cantAdded = 0;
 let docHeight = doc.internal.pageSize.getHeight();
 let docWidth = doc.internal.pageSize.getWidth();
