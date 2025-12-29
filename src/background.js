@@ -1,4 +1,4 @@
-import { ImageStorageHandler } from "./handlers/ImageStorageHandler.js";
+import { ImageStorageHandler } from "./handlers/imageStorageHandler.js";
 import { ConfigHandler } from "./handlers/configHandler.js";
 
 const imgStorage = new ImageStorageHandler();

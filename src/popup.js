@@ -1,6 +1,6 @@
 // Popup handles UI, image fetching, and PDF generation
 
-import { PDFHandler } from "./handlers/PDFHandler.js";
+import { PDFHandler } from "./handlers/pdfHandler.js";
 import { ConfigHandler } from "./handlers/configHandler.js";
 
 const imgContainer = document.getElementById("Image-Container");
@@ -88,7 +88,7 @@ function showEmpty() {
     imgContainer.innerHTML = '';
     
     const image = document.createElement("img");
-    image.src = "./assets/empty.svg";
+    image.src = "/icons/empty.svg";
     imgContainer.appendChild(image);
 
     const title = document.createElement("h2");
