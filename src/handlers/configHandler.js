@@ -8,7 +8,8 @@ export class ConfigHandler{
 
         chrome.storage.local.get(result => {
             if(result.imageSizes) {
-                this.#currentSizes = JSON.parse(result.imageSizes);        
+                console.log();
+                this.#currentSizes = result.imageSizes;        
             }
         });
     }
@@ -22,7 +23,7 @@ export class ConfigHandler{
         if(Number.isInteger(sizeX) && Number.isInteger(sizeY)){
             if(sizeX > 0 && sizeY > 0){
                 this.#currentSizes = {x: sizeX, y: sizeY};
-                chrome.storage.local.set({ imageSizes: this.#currentSizes })
+                chrome.storage.local.set({ imageSizes: JSON.stringify( this.#currentSizes) })
             }
             
         }

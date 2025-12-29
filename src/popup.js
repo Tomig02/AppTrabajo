@@ -1,11 +1,9 @@
 // Popup handles UI, image fetching, and PDF generation
 
 import { PDFHandler } from "./handlers/pdfHandler.js";
-import { ConfigHandler } from "./handlers/configHandler.js";
 
 const imgContainer = document.getElementById("Image-Container");
-const configHandler = new ConfigHandler();
-const pdfHandler = new PDFHandler(configHandler);
+const pdfHandler = new PDFHandler();
 
 // ----- Print Button -----
 
@@ -14,18 +12,23 @@ async function onClickHandler() {
     button.disabled = true;
 
     try {
-        // Get all image URLs from background
+        // Get all image URLs from background and sizing
         const response = await chrome.runtime.sendMessage({ action: "GetAllImages" });
+        const sizesResponse = await chrome.runtime.sendMessage({ action: "AskForSizesConfig" });
         
         if (!response || !response.allImages || response.allImages.length === 0) {
             alert("No hay imágenes en la cola");
             button.disabled = false;
             return;
         }
-
+        if (!sizesResponse || !sizesResponse.sizes) {
+            alert("Tamaño incorrecto");
+            button.disabled = false;
+            return;
+        }
         // Generate PDF
         pdfHandler.resetDocument();
-        pdfHandler.addImages(response.allImages);
+        pdfHandler.addImages(response.allImages, sizesResponse.sizes);
         await pdfHandler.printPDF();
 
         // Clear used images

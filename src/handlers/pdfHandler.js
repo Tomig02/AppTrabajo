@@ -1,41 +1,43 @@
 import jsPDF from "jspdf";
 
 export class PDFHandler{
-    #configHandlerRef;
     #currentDocument;
     #docHeight;
     #docWidth;
 
     #positionOffset;
 
-    constructor( configHandler ){
+    constructor(){
         this.#currentDocument = new jsPDF();
         this.#docHeight = this.#currentDocument.internal.pageSize.getHeight();
         this.#docWidth = this.#currentDocument.internal.pageSize.getWidth();
-        this.#configHandlerRef = configHandler;
         this.#positionOffset = {x: 0, y: 0};
     }
 
-    
-    #addImage( image, position ){
-        const imageSizes = this.#configHandlerRef.GetSize();
+    /**
+     * 
+     * @param {*} image 
+     * @param {*} position 
+     */
+    #addImage( image, position, imageSizes ){
+        console.log(imageSizes)
         this.#currentDocument.addImage(image, position.x, position.y, imageSizes.x, imageSizes.y);
     }
  
-    addImages( images ){
-        const imageSizes = this.#configHandlerRef.GetSize();
+    addImages( images, imageSizes ){
+        
         let rowMaxCant = Math.floor(this.#docWidth / imageSizes.x);
         
         let counter = 0;
         images.forEach(image => {
-            this.#addImage(image, this.#positionOffset);
+            if(counter == rowMaxCant){
+                this.#positionOffset = { x: 0, y: this.#positionOffset.y + imageSizes.y }
+                counter = 0;
+            }
+            this.#addImage(image, this.#positionOffset, imageSizes);
             
             this.#positionOffset.x = this.#positionOffset.x + imageSizes.x;
-
             counter++;
-            if(counter == rowMaxCant)
-                this.#positionOffset = (0, this.#positionOffset.y + imageSizes.y)
-                counter = 0;
         });
     }
 
