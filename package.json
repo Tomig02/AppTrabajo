@@ -30,6 +30,10 @@
             {
                 "name": "popup",
                 "src": "./src/popup/popup.js"
+            },
+            {
+                "name": "content-script",
+                "src": "./src/contentScript.js"
             }
         ],
         "scss_bundles": [
