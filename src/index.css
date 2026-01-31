@@ -113,3 +113,16 @@ body{
     margin-left: 1em;
 }
 
+.paper{
+    position: relative;
+    justify-self: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    background-color: blue;
+    width: 40%;
+}
+.paper-item{
+    position: absolute;
+    background-color: aqua;
+    outline: 1px solid black;
+}

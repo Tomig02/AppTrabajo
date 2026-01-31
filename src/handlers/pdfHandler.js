@@ -1,6 +1,6 @@
 import jsPDF from "jspdf";
 
-export class PDFHandler{
+export default class PDFHandler{
     #currentDocument;
     #docHeight;
     #docWidth;
@@ -54,4 +54,11 @@ export class PDFHandler{
     async printPDF(){
         this.#currentDocument.save("result.pdf");
     } 
+
+    getSizes() {
+    return {
+            x: this.#currentDocument.internal.pageSize.getWidth(),
+            y: this.#currentDocument.internal.pageSize.getHeight()
+        };
+    }
 }

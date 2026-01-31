@@ -1,4 +1,4 @@
-export class ImageStorageHandler {
+export default class ImageStorageHandler {
 
     constructor() {
         // Initialize storage asynchronously

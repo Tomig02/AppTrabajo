@@ -1,9 +1,12 @@
 // Popup handles UI, image fetching, and PDF generation
 
-import { PDFHandler } from "./handlers/pdfHandler.js";
+import PDFHandler from "./handlers/PDFHandler.js";
+import PrintVisualizer from "./handlers/PrintVisualizer.js";
 
 const imgContainer = document.getElementById("Image-Container");
+const visualContainer = document.getElementById("paper");
 const pdfHandler = new PDFHandler();
+const printVisualizer = new PrintVisualizer(pdfHandler);
 
 // ----- Print Button -----
 
@@ -45,6 +48,32 @@ async function onClickHandler() {
 
 document.getElementById("printBtn").addEventListener('click', onClickHandler);
 
+async function updateVisualizer( cantImg ){
+    console.log("updation");
+    const sizesResponse = await chrome.runtime.sendMessage({ action: "AskForSizesConfig" });
+
+    if (!sizesResponse || !sizesResponse.sizes) {
+        alert("Tamaño incorrecto");
+        button.disabled = false;
+        return;
+    }
+
+    const result = printVisualizer.PrintItemsVisuals(sizesResponse, cantImg, pdfHandler);
+    console.log(result);
+    visualContainer.style.aspectRatio = `${result.aspectRatio}`;
+
+    result.printPositions.forEach(position => {
+        const element = document.createElement("div");
+        visualContainer.appendChild(element);
+
+        element.classList.add("paper-item");
+        element.style.width  = `${result.printSizes.x}px`;
+        element.style.height = `${result.printSizes.y}px`;
+        element.style.top    = `${position.y}px`;
+        element.style.left   = `${position.x}px`;
+    });
+}
+
 // ----- UI Loading -----
 
 /**
@@ -59,6 +88,7 @@ function loadImages() {
         }
 
         if (response.allImages && response.allImages.length > 0) {
+            updateVisualizer(response.allImages.length);
             populateUL(response.allImages);
         } else {
             showEmpty();

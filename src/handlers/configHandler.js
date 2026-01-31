@@ -1,5 +1,5 @@
 
-export class ConfigHandler{
+export default class ConfigHandler{
     #defaultSizes = {x: 50, y: 100};
     #currentSizes;
 

@@ -1,10 +1,10 @@
-import { ImageStorageHandler } from "./handlers/imageStorageHandler.js";
-import { ConfigHandler } from "./handlers/configHandler.js";
+import ImageStorageHandler from "./handlers/ImageStorageHandler.js";
+import ConfigHandler from "./handlers/ConfigHandler.js";
 
 const imgStorage = new ImageStorageHandler();
 const configHandler = new ConfigHandler();
 
-// ===== Context Menu Setup =====
+// ----- Context Menu Setup -----
 function sendCaptureMessage(tabId, info) {
     chrome.scripting.executeScript(
         {
@@ -74,11 +74,11 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "AgregarCola",
     title: "Agregar a cola",
-    contexts: ["image"],   // 👈 THIS IS REQUIRED
+    contexts: ["image"]
   });
 });
 
-// ===== Message Handlers (Consolidated) =====
+// ----- Message Handlers -----
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // Handle async operations
