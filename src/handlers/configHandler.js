@@ -23,7 +23,7 @@ export default class ConfigHandler{
         if(Number.isInteger(sizeX) && Number.isInteger(sizeY)){
             if(sizeX > 0 && sizeY > 0){
                 this.#currentSizes = {x: sizeX, y: sizeY};
-                chrome.storage.local.set({ imageSizes: JSON.stringify( this.#currentSizes) })
+                chrome.storage.local.set({ imageSizes: this.#currentSizes })
             }
             
         }

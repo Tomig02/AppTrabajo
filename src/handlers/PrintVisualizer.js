@@ -1,23 +1,33 @@
 
 export default class PrintVisualizer{
-    PrintItemsVisuals( printConfig, printCant, pdfHandler){
+    PrintItemsVisuals(printConfig, printCant, pdfHandler) {
         const viewport = pdfHandler.getSizes();
         const aspectRatio = viewport.x / viewport.y;
-        
+
+        console.log(printConfig)
+        const sizes = {
+            x: Number(printConfig.sizes.x),
+            y: Number(printConfig.sizes.y)
+        };
+
+        const printSizes = {
+            x: sizes.x * aspectRatio,
+            y: sizes.y * aspectRatio
+        };
+
         const printPositions = [];
-        
-        const sizes = printConfig.sizes;
-        const printSizes = {x: sizes.x * aspectRatio, y: sizes.y * aspectRatio};
 
         for (let index = 0; index < printCant; index++) {
-            let positionX = index * printSizes.x;
-            printPositions.push({x: positionX, y: 0}); 
+            printPositions.push({
+                x: index * printSizes.x,
+                y: 0
+            });
         }
 
         return {
-            aspectRatio: aspectRatio,
-            printPositions: printPositions,
-            printSizes: printSizes
-        }
+            aspectRatio,
+            printPositions,
+            printSizes
+        };
     }
 }
