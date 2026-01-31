@@ -42,7 +42,7 @@ export default class PDFHandler{
     }
 
     resetDocument(){
-        this.#currentDocument = new jsPDF();
+        this.#currentDocument = new jsPDF();;
         this.#positionOffset = {x: 0, y: 0};
     }
 

@@ -58,7 +58,7 @@ async function updateVisualizer( cantImg ){
         return;
     }
 
-    const result = printVisualizer.PrintItemsVisuals(sizesResponse, cantImg, pdfHandler);
+    const result = printVisualizer.PrintItemsVisuals(sizesResponse, cantImg, pdfHandler, visualContainer.clientWidth);
     console.log(result);
     visualContainer.style.aspectRatio = `${result.aspectRatio}`;
 

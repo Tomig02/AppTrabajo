@@ -1,33 +1,43 @@
 
 export default class PrintVisualizer{
-    PrintItemsVisuals(printConfig, printCant, pdfHandler) {
-        const viewport = pdfHandler.getSizes();
-        const aspectRatio = viewport.x / viewport.y;
+    MM_TO_PX = 3.779527559;
 
-        console.log(printConfig)
-        const sizes = {
-            x: Number(printConfig.sizes.x),
-            y: Number(printConfig.sizes.y)
+    PrintItemsVisuals(printConfig, printCant, pdfHandler, containerWidthPx) {
+        const viewportMm = pdfHandler.getSizes(); // mm
+
+        const pageWidthPx  = viewportMm.x * this.MM_TO_PX;
+        const pageHeightPx = viewportMm.y * this.MM_TO_PX;
+
+        const scale = containerWidthPx / pageWidthPx;
+
+        const sizesMm = printConfig.sizes;
+
+        const printSizesPx = {
+            x: sizesMm.x * this.MM_TO_PX * scale,
+            y: sizesMm.y * this.MM_TO_PX * scale
         };
 
-        const printSizes = {
-            x: sizes.x * aspectRatio,
-            y: sizes.y * aspectRatio
-        };
+        const maxPerRow = Math.max(
+            1,
+            Math.floor((pageWidthPx * scale) / printSizesPx.x)
+        );
 
         const printPositions = [];
 
-        for (let index = 0; index < printCant; index++) {
+        for (let i = 0; i < printCant; i++) {
+            const col = i % maxPerRow;
+            const row = Math.floor(i / maxPerRow);
+
             printPositions.push({
-                x: index * printSizes.x,
-                y: 0
+                x: col * printSizesPx.x,
+                y: row * printSizesPx.y
             });
         }
 
         return {
-            aspectRatio,
+            aspectRatio: viewportMm.x / viewportMm.y,
             printPositions,
-            printSizes
+            printSizes: printSizesPx
         };
     }
 }

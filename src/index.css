@@ -120,6 +120,8 @@ body{
     margin-bottom: 1em;
     background-color: blue;
     width: 40%;
+
+    overflow: hidden;
 }
 .paper-item{
     position: absolute;
