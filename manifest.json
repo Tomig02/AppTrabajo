@@ -1,0 +1,41 @@
+{
+    "name": "Seguro Ayuda",
+    "short_name": "Seguro Ayuda",
+    "description": "Extensión para gestionar cola de impresión",
+    "homepage_url": "http://chrome.google.com/webstore",
+    "version": "0.0.1",
+    "version_name": "0.0.1",
+    "manifest_version": 3,
+    "minimum_chrome_version": "88",
+    "host_permissions": [
+        "https://web.whatsapp.com/*"
+    ],
+    "permissions": [
+        "contextMenus",
+        "activeTab",
+        "storage",
+        "scripting" 
+    ],
+    "icons": {
+        "128": "assets/img/128x128.png",
+        "16": "assets/img/16x16.png"
+    },
+    "background": {
+        "service_worker": "./src/background.js",
+        "type": "module"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://web.whatsapp.com/*"],
+            "js": ["./src/contentScript.js"],
+            "run_at": "document_start"
+        }
+    ],
+    "action": {
+        "default_popup": "./src/index.html",
+        "default_icon": {
+            "16": "assets/img/16x16.png"
+        },
+        "default_title": "Seguro Ayuda"
+    }
+}

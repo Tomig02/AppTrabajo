@@ -1,8 +1,9 @@
 # AppTrabajo
 
-Una extension de chrome para ayudarme en las tareas de mi trabajo
+A simple extension meant to help with printing images received through whatsapp
 
-This extension was created with [Extension CLI](https://oss.mobilefirst.me/extension-cli/)!
-If you find this software helpful [star](https://github.com/MobileFirstLLC/extension-cli/) or [sponsor](https://github.com/sponsors/MobileFirstLLC) this project.
-JSIntellisense [link](https://github.com/cmc19/js-intellisense/tree/master)
+### Modules installed
+- [extension - 2.1.3](https://github.com/extension-js/extension.js)
+- [jspdf - 3.0.4](https://github.com/parallax/jsPDF)
+- [chrome-types - 0.1.403](https://github.com/cmc19/js-intellisense/tree/master)
 
