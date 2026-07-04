@@ -1,57 +1,79 @@
 import jsPDF from "jspdf";
 
-export class PDFHandler{
+export default class PDFHandler {
     #currentDocument;
     #docHeight;
     #docWidth;
 
-    #positionOffset;
-
-    constructor(){
-        this.#currentDocument = new jsPDF();
-        this.#docHeight = this.#currentDocument.internal.pageSize.getHeight();
-        this.#docWidth = this.#currentDocument.internal.pageSize.getWidth();
-        this.#positionOffset = {x: 0, y: 0};
+    constructor() {
+        this.resetDocument();
     }
 
     /**
-     * 
-     * @param {*} image 
-     * @param {*} position 
+     * Restart the pdf document
      */
-    #addImage( image, position, imageSizes ){
-        console.log(imageSizes)
+    resetDocument() {
+        this.#currentDocument = new jsPDF();
+        this.#docHeight = this.#currentDocument.internal.pageSize.getHeight();
+        this.#docWidth = this.#currentDocument.internal.pageSize.getWidth();
+    }
+
+    /**
+     * Add an image on the specified coordinates
+     * @param {string} image
+     * @param {{x: number, y: number}} position 
+     * @param {{x: number, y: number}} imageSizes 
+     */
+    #addImage(image, position, imageSizes) {
         this.#currentDocument.addImage(image, position.x, position.y, imageSizes.x, imageSizes.y);
     }
  
-    addImages( images, imageSizes ){
-        
-        let rowMaxCant = Math.floor(this.#docWidth / imageSizes.x);
-        
+    /**
+     * Insert a list of images in rows
+     * @param {string[]} images 
+     * @param {{x: number, y: number}} imageSizes 
+     */
+    addImages(images, imageSizes) {
+        if (!images || images.length === 0) return;
+
+        const rowMaxCant = Math.floor(this.#docWidth / imageSizes.x);
         let counter = 0;
+        let currentX = 0;
+        let currentY = 0;
+
         images.forEach(image => {
-            if(counter == rowMaxCant){
-                this.#positionOffset = { x: 0, y: this.#positionOffset.y + imageSizes.y }
+            if (counter === rowMaxCant) {
+                currentX = 0;
+                currentY += imageSizes.y;
                 counter = 0;
             }
-            this.#addImage(image, this.#positionOffset, imageSizes);
-            
-            this.#positionOffset.x = this.#positionOffset.x + imageSizes.x;
+
+            if (currentY + imageSizes.y > this.#docHeight) {
+                this.#currentDocument.addPage();
+                currentX = 0;
+                currentY = 0;
+                counter = 0; 
+            }
+
+            this.#addImage(image, { x: currentX, y: currentY }, imageSizes);
+ 
+            currentX += imageSizes.x;
             counter++;
         });
     }
 
-    resetDocument(){
-        this.#currentDocument = new jsPDF();
-        this.#positionOffset = {x: 0, y: 0};
-    }
-
-    // Return PDF as base64 blob (for background → popup transfer)
+    /**
+     * Return PDF in a base64 blob string
+     * @returns {string}
+     */
     getPDFBlob() {
         return this.#currentDocument.output('datauristring').split(',')[1];
     }
 
-    async printPDF(){
+    /**
+     * Start PDF download
+     */
+    printPDF() {
         this.#currentDocument.save("result.pdf");
     } 
 }

@@ -1,113 +1,104 @@
 // Popup handles UI, image fetching, and PDF generation
-
-import { PDFHandler } from "./handlers/pdfHandler.js";
+import PDFHandler from "./handlers/pdfHandler.js";
 
 const imgContainer = document.getElementById("Image-Container");
+const widthInput = document.getElementById("Width");
+const heightInput = document.getElementById("Height");
+const printButton = document.getElementById("printBtn");
+
 const pdfHandler = new PDFHandler();
 
 // ----- Print Button -----
 
 async function onClickHandler() {
-    const button = document.getElementById("printBtn");
-    button.disabled = true;
+    printButton.disabled = true;
 
     try {
-        // Get all image URLs from background and sizing
-        const response = await chrome.runtime.sendMessage({ action: "GetAllImages" });
-        const sizesResponse = await chrome.runtime.sendMessage({ action: "AskForSizesConfig" });
+        const [imagesResponse, sizesResponse] = await Promise.all([
+            chrome.runtime.sendMessage({ action: "GetAllImages" }),
+            chrome.runtime.sendMessage({ action: "AskForSizesConfig" })
+        ]);
         
-        if (!response || !response.allImages || response.allImages.length === 0) {
+        if (!imagesResponse?.allImages?.length) {
             alert("No hay imágenes en la cola");
-            button.disabled = false;
             return;
         }
-        if (!sizesResponse || !sizesResponse.sizes) {
+        if (!sizesResponse?.sizes) {
             alert("Tamaño incorrecto");
-            button.disabled = false;
             return;
         }
-        // Generate PDF
+
         pdfHandler.resetDocument();
-        pdfHandler.addImages(response.allImages, sizesResponse.sizes);
+        pdfHandler.addImages(imagesResponse.allImages, sizesResponse.sizes);
         await pdfHandler.printPDF();
 
-        // Clear used images
         await chrome.runtime.sendMessage({ action: "clearQueue" });
-        loadImages();
+        await loadImages();
 
     } catch (error) {
         console.error("Error generating PDF:", error);
         alert("Error al generar PDF: " + error.message);
     } finally {
-        button.disabled = false;
+        printButton.disabled = false;
     }
 }
 
-document.getElementById("printBtn").addEventListener('click', onClickHandler);
+printButton.addEventListener('click', onClickHandler);
 
 // ----- UI Loading -----
 
 /**
  * Loads the images to be displayed as a preview inside the popup
  */
-function loadImages() {
-    chrome.runtime.sendMessage({ action: "GetAllImages" }, (response) => {
-        if (!response) {
-            console.error("No response from background");
-            showEmpty();
-            return;
-        }
-
-        if (response.allImages && response.allImages.length > 0) {
+async function loadImages() {
+    try {
+        const response = await chrome.runtime.sendMessage({ action: "GetAllImages" });
+        if (response?.allImages?.length > 0) {
             populateUL(response.allImages);
         } else {
             showEmpty();
         }
-    });
+    } catch (error) {
+        console.error("No response from background", error);
+        showEmpty();
+    }
 }
 
-window.addEventListener('load', () => {
-    // Load images
-    loadImages();
+window.addEventListener('load', async () => {
+    await loadImages();
     
-    // Load size configuration
-    chrome.runtime.sendMessage({ action: "AskForSizesConfig" }, (response) => {
-        if (response && response.sizes) {
-            document.getElementById("Width").value = response.sizes.x || 50;
-            document.getElementById("Height").value = response.sizes.y || 100;
-        } else {
-            document.getElementById("Width").value = 50;
-            document.getElementById("Height").value = 100;
-        }
-    });
+    try {
+        const response = await chrome.runtime.sendMessage({ action: "AskForSizesConfig" });
+        widthInput.value = response?.sizes?.x ?? 50;
+        heightInput.value = response?.sizes?.y ?? 100;
+    } catch (error) {
+        console.error("Failed to fetch initial size configuration", error);
+        widthInput.value = 50;
+        heightInput.value = 100;
+    }
 });
 
 // ----- HTML control -----
 
-/**
- * When there is no images to preview, then show a message saying that it's empty
- */
 function showEmpty() {
     imgContainer.innerHTML = '';
-    
+    imgContainer.classList.add("empty-container");
+    imgContainer.classList.remove("image-container");
+
     const image = document.createElement("img");
     image.src = "/icons/empty.svg";
-    imgContainer.appendChild(image);
 
     const title = document.createElement("h2");
-    const text = document.createElement("p");
     title.textContent = "Impresión vacía";
-    text.textContent = "La cola de impresión está vacía";
-    imgContainer.appendChild(title);
-    imgContainer.appendChild(text);
 
-    imgContainer.classList.add("empty-container");
+    const text = document.createElement("p");
+    text.textContent = "La cola de impresión está vacía";
+
+    imgContainer.append(image, title, text);
 }
 
 /**
- * populates a container with the images to be shown
  * @param {string[]} items 
- * @returns 
  */
 function populateUL(items) {
     if (!items || items.length === 0) return;
@@ -116,15 +107,16 @@ function populateUL(items) {
     imgContainer.classList.remove("empty-container");
     imgContainer.classList.add("image-container");
 
+    const fragment = document.createDocumentFragment();
     items.forEach(imageSrc => {
-        addNewElement(imageSrc, imgContainer);
+        addNewElement(imageSrc, fragment);
     });
+    imgContainer.appendChild(fragment);
 }
 
 /**
- * Adds a newly created image to a parent container
  * @param {string} imageSrc 
- * @param {HTMLElement} father 
+ * @param {HTMLElement|DocumentFragment} father 
  */
 function addNewElement(imageSrc, father) {
     const div = document.createElement("div");
@@ -132,28 +124,32 @@ function addNewElement(imageSrc, father) {
 
     const image = document.createElement("img");
     image.src = imageSrc;
+    
     div.appendChild(image);
-
     father.appendChild(div);
 }
 
 // ----- Size Configuration -----
 
-/**
- * listen to changes in the size inputs and update the image sizing as they change
- * @param {Event} event 
- */
-function HandleSizeChange(event) {
-    const widthValue = parseInt(document.getElementById("Width").value) || 50;
-    const heightValue = parseInt(document.getElementById("Height").value) || 100;
+let sizeTimeout;
+function handleSizeChange() {
+    clearTimeout(sizeTimeout);
+    
+    sizeTimeout = setTimeout(async () => {
+        const widthValue = Math.max(1, parseInt(widthInput.value) || 50);
+        const heightValue = Math.max(1, parseInt(heightInput.value) || 100);
 
-    chrome.runtime.sendMessage({ action: "UpdateSizesConfig", sizes: { x: widthValue, y: heightValue } }, 
-        (response) => {
-            if (!response || !response.success) {
-                console.error("Failed to update sizes");
-            }
+        try {
+            const response = await chrome.runtime.sendMessage({ 
+                action: "UpdateSizesConfig", 
+                sizes: { x: widthValue, y: heightValue } 
+            });
+            if (!response?.success) console.error("Failed to update sizes");
+        } catch (error) {
+            console.error("Communication error updating sizes:", error);
         }
-    );
+    }, 250);
 }
-document.getElementById("Width").addEventListener('input', HandleSizeChange);
-document.getElementById("Height").addEventListener('input', HandleSizeChange);
+
+widthInput.addEventListener('input', handleSizeChange);
+heightInput.addEventListener('input', handleSizeChange);
