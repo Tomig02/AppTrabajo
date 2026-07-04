@@ -1,8 +1,9 @@
-import { ImageStorageHandler } from "./handlers/imageStorageHandler.js";
-import { ConfigHandler } from "./handlers/configHandler.js";
-
+import ImageStorageHandler from "./handlers/imageStorageHandler.js";
+import ConfigHandler from "./handlers/configHandler.js";
 const imgStorage = new ImageStorageHandler();
+
 const configHandler = new ConfigHandler();
+const configInitPromise = configHandler.init();
 
 // ===== Context Menu Setup =====
 function sendCaptureMessage(tabId, info) {
@@ -73,7 +74,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "AgregarCola",
-    title: "Agregar a cola",
+    title: "Agregar a cola test",
     contexts: ["image"],   // 👈 THIS IS REQUIRED
   });
 });
@@ -100,6 +101,7 @@ async function handleMessage(request, sender, sendResponse) {
                 break;
 
             case "AskForSizesConfig":
+                if(configInitPromise) await configInitPromise
                 const sizes = configHandler.GetSize();
                 sendResponse({ sizes: sizes || { x: 50, y: 100 } });
                 break;
