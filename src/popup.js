@@ -2,6 +2,7 @@
 
 import { PDFHandler } from "./handlers/pdfHandler.js";
 
+const PrintPreview = document.getElementById("print-preview");
 const imgContainer = document.getElementById("Image-Container");
 const pdfHandler = new PDFHandler();
 
@@ -57,11 +58,10 @@ function loadImages() {
             showEmpty();
             return;
         }
-
         if (response.allImages && response.allImages.length > 0) {
             populateUL(response.allImages);
         } else {
-            showEmpty();
+            printButton.disabled = true;
         }
     });
 }
@@ -85,40 +85,48 @@ window.addEventListener('load', () => {
 // ----- HTML control -----
 
 /**
- * When there is no images to preview, then show a message saying that it's empty
- */
-function showEmpty() {
-    imgContainer.innerHTML = '';
-    
-    const image = document.createElement("img");
-    image.src = "/icons/empty.svg";
-    imgContainer.appendChild(image);
-
-    const title = document.createElement("h2");
-    const text = document.createElement("p");
-    title.textContent = "Impresión vacía";
-    text.textContent = "La cola de impresión está vacía";
-    imgContainer.appendChild(title);
-    imgContainer.appendChild(text);
-
-    imgContainer.classList.add("empty-container");
-}
-
-/**
  * populates a container with the images to be shown
  * @param {string[]} items 
  * @returns 
  */
 function populateUL(items) {
     if (!items || items.length === 0) return;
+    PopulatePrintPreview(items);
+    printButton.disabled = false;
 
-    imgContainer.innerHTML = '';
-    imgContainer.classList.remove("empty-container");
-    imgContainer.classList.add("image-container");
+    // create a simple preview of how pages will look like 
+    async function PopulatePrintPreview(items){
+        PrintPreview.innerHTML = "";
+        const imageSizes = await chrome.runtime.sendMessage({ action: "AskForSizesConfig" });
+        const pages = pdfHandler.calculateLayout(items, imageSizes.sizes);
 
-    items.forEach(imageSrc => {
-        addNewElement(imageSrc, imgContainer);
-    });
+        const docSize = pdfHandler.getDocumentSize();
+        const previewWidth = 220;
+        const scale = previewWidth / docSize.width;
+
+        let pageIndex = 0;
+        pages.forEach(page => {
+            const pageDiv = document.createElement("div");
+            pageDiv.className = "preview-page";
+            pageDiv.style.setProperty("--i", pageIndex)
+
+            page.forEach(item => {
+                const img = document.createElement("img");
+                img.src = item.image;
+
+                img.style.position = "absolute";
+                img.style.left = `${item.x * scale}px`;
+                img.style.top = `${item.y * scale}px`;
+                img.style.width = `${item.width * scale}px`;
+                img.style.height = `${item.height * scale}px`;
+
+                pageDiv.appendChild(img);
+            });
+
+            PrintPreview.appendChild(pageDiv);
+            pageIndex += 1;
+        });
+    }
 }
 
 /**
