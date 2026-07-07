@@ -1,8 +1,19 @@
 export class ImageStorageHandler {
 
-    constructor() {
-        // Initialize storage asynchronously
-        chrome.storage.session.set({ urlList: [] });
+    constructor() {}
+
+    /**
+     * Get all images saved or an empty array if there are none.
+     * @returns {Promise<string[]>}
+     */
+    async GetAllImages() {
+        try {
+            const result = await chrome.storage.session.get('urlList');
+            return result.urlList || [];
+        } catch (error) {
+            console.error("Error al obtener imágenes de la sesión:", error);
+            return null;
+        }
     }
 
     /**
@@ -12,9 +23,14 @@ export class ImageStorageHandler {
      */
     async SaveImage(newImage) {
         const savedImages = await this.GetAllImages();
-        const newList = [...savedImages, newImage];
 
-        await chrome.storage.session.set({ urlList: newList });
+        if(savedImages != null){
+            const newList = [...savedImages, newImage];
+            await chrome.storage.session.set({ urlList: newList });
+        }
+        else{
+            alert("Error al guardar la imagen")
+        }
     }
 
     /**

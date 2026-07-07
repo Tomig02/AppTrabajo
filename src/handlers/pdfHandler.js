@@ -24,21 +24,74 @@ export class PDFHandler{
         this.#currentDocument.addImage(image, position.x, position.y, imageSizes.x, imageSizes.y);
     }
  
-    addImages( images, imageSizes ){
-        
-        let rowMaxCant = Math.floor(this.#docWidth / imageSizes.x);
-        
+    /**
+     * Insert a list of images in rows
+     * @param {string[]} images 
+     * @param {{x: number, y: number}} imageSizes 
+     */
+    addImages(images, imageSizes) {
+        const pages = this.calculateLayout(images, imageSizes);
+
+        pages.forEach((page, pageIndex) => {
+
+            if (pageIndex > 0)
+                this.#currentDocument.addPage();
+
+            page.forEach(item => {
+
+                this.#addImage(
+                    item.image,
+                    { x: item.x, y: item.y },
+                    { x: item.width, y: item.height }
+                );
+
+            });
+
+        });
+    }
+    calculateLayout(images, imageSizes) {
+        const pages = [];
+    
+        const rowMaxCant = Math.floor(this.#docWidth / imageSizes.x);
+    
+        let page = [];
         let counter = 0;
+        let currentX = 0;
+        let currentY = 0;
+    
         images.forEach(image => {
-            if(counter == rowMaxCant){
-                this.#positionOffset = { x: 0, y: this.#positionOffset.y + imageSizes.y }
+    
+            if (counter === rowMaxCant) {
+                currentX = 0;
+                currentY += imageSizes.y;
                 counter = 0;
             }
-            this.#addImage(image, this.#positionOffset, imageSizes);
-            
-            this.#positionOffset.x = this.#positionOffset.x + imageSizes.x;
+    
+            if (currentY + imageSizes.y > this.#docHeight) {
+                pages.push(page);
+    
+                page = [];
+                currentX = 0;
+                currentY = 0;
+                counter = 0;
+            }
+    
+            page.push({
+                image,
+                x: currentX,
+                y: currentY,
+                width: imageSizes.x,
+                height: imageSizes.y
+            });
+    
+            currentX += imageSizes.x;
             counter++;
         });
+    
+        if (page.length)
+            pages.push(page);
+    
+        return pages;
     }
 
     resetDocument(){
@@ -50,8 +103,16 @@ export class PDFHandler{
     getPDFBlob() {
         return this.#currentDocument.output('datauristring').split(',')[1];
     }
-
-    async printPDF(){
+    getDocumentSize() {
+        return {
+            width: this.#docWidth,
+            height: this.#docHeight
+        };
+    }
+    /**
+     * Start PDF download
+     */
+    printPDF() {
         this.#currentDocument.save("result.pdf");
     } 
 }
