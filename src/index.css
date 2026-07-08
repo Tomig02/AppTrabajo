@@ -92,6 +92,7 @@ body{
 
 
 .input-row{
+    width: 100%;
     font-size: 1.5em;
     margin: none;
 }
@@ -101,21 +102,70 @@ body{
 }
 .input-options{
     display: flex;
-
+    gap: 1rem;
     & .option{
         width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-        & input{
-            width: 90%;
-            border-radius: none;
-            border: 2px solid rgb(85,162,255);
-        }
+
         & label{
+            margin-left: 0.2rem;
             width: 90%;
             font-size: 0.7rem;
             color: rgb(44, 44, 44);
+        }
+
+        & .custom-number-input {
+            width: 100%;
+            height: 1.7rem;
+            display: flex;
+            align-items: center;
+
+            & input{
+                box-sizing: border-box;
+                width: 90%;
+                height: 100%;
+                padding: 0.35rem 0.8rem;
+                border-radius: 0.2rem;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                border: 1px solid rgb(36, 45, 56);
+                border-right: none;
+            }
+            
+            & .number-buttons {
+                box-sizing: border-box;
+                width: 1.5rem;
+                height: inherit;
+                
+                display: flex;
+                flex-direction: column;
+
+                border: 1px solid black;
+                border-radius: 0.2rem;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                overflow: hidden;
+
+                & button{
+                    box-sizing: border-box;
+                    height: 50%;
+                    width: 100%;
+
+                    padding: 0;
+                    margin: 0;
+                    border: none;
+                    border-radius: none;
+                    border: 1px solid transparent;
+                }
+                & .top-btn{
+                    border-bottom: 1px solid black;
+                }
+                & button:hover{
+                    background-color: aqua;
+                }
+            }
         }
     }
 }
@@ -219,3 +269,14 @@ body{
     align-items: center;
     justify-content: center;
 }*/
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

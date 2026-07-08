@@ -15,11 +15,25 @@
             <div class="input-options">
                 <div class="option">
                     <label for="width">Horizontal</label>
-                    <input type="number" name="width" id="Width"/>
+
+                    <div class="custom-number-input">
+                        <input type="number" name="width" id="Width" min="0" max="500"/>
+                        <div class="number-buttons">
+                            <button type="button" id="plus-hor" class="top-btn">+</button>
+                            <button type="button" id="minus-hor">-</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="option">
                     <label for="height">Vertical</label>
-                    <input type="number" name="height" id="Height"/>
+
+                    <div class="custom-number-input">
+                        <input type="number" name="height" id="Height" min="0" max="500"/>
+                        <div class="number-buttons">
+                            <button type="button" id="plus-ver" class="top-btn">+</button>
+                            <button type="button" id="minus-ver">-</button>
+                        </div>
+                    </div>
                 </div>
                 
             </div>
@@ -34,5 +48,6 @@
     </div>
 
     <script src="./popup.js"></script>
+    <script src="./scripts/inputConfig.js"></script>
 </body>
 </html>
