@@ -116,7 +116,6 @@ export class PDFHandler{
         this.#positionOffset = {x: 0, y: 0};
     }
 
-    // Return PDF as base64 blob (for background → popup transfer)
     getPDFBlob() {
         return this.#currentDocument.output('datauristring').split(',')[1];
     }

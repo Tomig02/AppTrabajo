@@ -71,14 +71,16 @@ chrome.contextMenus.onClicked.addListener((info) => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: "AgregarCola",
-    title: "Agregar a cola",
-    contexts: ["image"],   // 👈 THIS IS REQUIRED
-  });
+    chrome.storage.local.clear();
+
+    chrome.contextMenus.create({
+        id: "AgregarCola",
+        title: "Agregar a cola",
+        contexts: ["image"],
+    });
 });
 
-// ===== Message Handlers (Consolidated) =====
+// ===== Message Handlers =====
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // Handle async operations

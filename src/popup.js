@@ -97,8 +97,7 @@ function populateUL(items) {
     async function PopulatePrintPreview(items){
         PrintPreview.innerHTML = "";
         const imageSizes = await chrome.runtime.sendMessage({ action: "AskForSizesConfig" });
-        
-        console.log("PopulateUL: ", imageSizes.sizes);
+
         const pages = pdfHandler.calculateLayout(items, imageSizes.sizes);
 
         const docSize = pdfHandler.getDocumentSize();
