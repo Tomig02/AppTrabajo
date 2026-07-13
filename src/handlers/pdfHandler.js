@@ -9,8 +9,8 @@ export class PDFHandler{
 
     constructor(){
         this.#currentDocument = new jsPDF();
-        this.#docHeight = this.#currentDocument.internal.pageSize.getHeight();
-        this.#docWidth = this.#currentDocument.internal.pageSize.getWidth();
+        this.#docHeight = this.#currentDocument.internal.pageSize.getHeight() || 297;
+        this.#docWidth = this.#currentDocument.internal.pageSize.getWidth() || 210;
         this.#positionOffset = {x: 0, y: 0};
     }
 
@@ -76,6 +76,23 @@ export class PDFHandler{
                 counter = 0;
             }
     
+            console.log("Right before: ");
+            console.log(JSON.stringify(imageSizes));
+            
+            console.log("imageSizes =", imageSizes);
+            console.log("x =", imageSizes.x);
+            console.log("y =", imageSizes.y);
+
+            const obj = {
+                image,
+                x: currentX,
+                y: currentY,
+                width: imageSizes.x,
+                height: imageSizes.y
+            };
+            
+            console.log(obj);
+            
             page.push({
                 image,
                 x: currentX,
@@ -83,7 +100,7 @@ export class PDFHandler{
                 width: imageSizes.x,
                 height: imageSizes.y
             });
-    
+            
             currentX += imageSizes.x;
             counter++;
         });

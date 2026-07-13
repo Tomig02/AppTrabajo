@@ -6,6 +6,9 @@ const PrintPreview = document.getElementById("print-preview");
 const imgContainer = document.getElementById("Image-Container");
 const pdfHandler = new PDFHandler();
 
+const printButton = document.getElementById("printBtn");
+printButton.addEventListener('click', onClickHandler);
+
 // ----- Print Button -----
 
 async function onClickHandler() {
@@ -44,8 +47,6 @@ async function onClickHandler() {
     }
 }
 
-document.getElementById("printBtn").addEventListener('click', onClickHandler);
-
 // ----- UI Loading -----
 
 /**
@@ -67,9 +68,6 @@ function loadImages() {
 }
 
 window.addEventListener('load', () => {
-    // Load images
-    loadImages();
-    
     // Load size configuration
     chrome.runtime.sendMessage({ action: "AskForSizesConfig" }, (response) => {
         if (response && response.sizes) {
@@ -79,7 +77,8 @@ window.addEventListener('load', () => {
             document.getElementById("Width").value = 50;
             document.getElementById("Height").value = 100;
         }
-    });
+        loadImages();
+    })
 });
 
 // ----- HTML control -----
@@ -98,10 +97,12 @@ function populateUL(items) {
     async function PopulatePrintPreview(items){
         PrintPreview.innerHTML = "";
         const imageSizes = await chrome.runtime.sendMessage({ action: "AskForSizesConfig" });
+        
+        console.log("PopulateUL: ", imageSizes.sizes);
         const pages = pdfHandler.calculateLayout(items, imageSizes.sizes);
 
         const docSize = pdfHandler.getDocumentSize();
-        const previewWidth = 220;
+        const previewWidth = 210;
         const scale = previewWidth / docSize.width;
 
         let pageIndex = 0;
@@ -159,6 +160,9 @@ function HandleSizeChange(event) {
         (response) => {
             if (!response || !response.success) {
                 console.error("Failed to update sizes");
+            }
+            else{
+                loadImages()
             }
         }
     );

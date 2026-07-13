@@ -105,6 +105,7 @@ body{
     gap: 1rem;
     & .option{
         width: 100%;
+        height: 2rem;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
@@ -118,7 +119,7 @@ body{
 
         & .custom-number-input {
             width: 100%;
-            height: 1.7rem;
+            height: 100%;
             display: flex;
             align-items: center;
 
@@ -142,7 +143,7 @@ body{
                 display: flex;
                 flex-direction: column;
 
-                border: 1px solid black;
+                border: 1px solid rgb(52, 143, 255);
                 border-radius: 0.2rem;
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
@@ -158,12 +159,16 @@ body{
                     border: none;
                     border-radius: none;
                     border: 1px solid transparent;
+                    background-color: rgb(85,162,255);
                 }
                 & .top-btn{
-                    border-bottom: 1px solid black;
+                    border-bottom: 1px solid rgb(52, 143, 255);
                 }
                 & button:hover{
-                    background-color: aqua;
+                    background-color: rgb(110, 175, 253);
+                }
+                & button:active{
+                    background-color: rgb(65, 151, 255);
                 }
             }
         }
@@ -176,20 +181,12 @@ body{
     gap: 20px;
 }
 
-.preview-page {
-    width: 210px;
-    height: 297px;
-    background: white;
-    border: 1px solid #999;
-    position: relative;
-    box-shadow: 0 0 8px rgba(0,0,0,.2);
-}
-
 .preview-image {
     position: absolute;
     border: 1px solid #3f8efc;
     background: rgba(63,142,252,.2);
     box-sizing: border-box;
+    object-fit: cover
 }
 
 #printPreview {
@@ -198,55 +195,35 @@ body{
     gap: 20px;
 }
 
-/*
-.preview-page {
-    width: 210px;
-    height: 297px;
-    background: white;
-    border: 1px solid #999;
-    position: relative;
-    box-shadow: 0 0 8px rgba(0,0,0,.2);
-    overflow: hidden;
-}*/
-
-/* Tu contenedor actual (asegúrate de agregarle position: relative y un tamaño) */
 .preview-component {
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    /* Le damos el ancho de una página + el espacio que ocuparán las extensiones */
     width: 100%; 
     height: 20rem; 
     margin-top: 1.5rem;
 }
 
-/* Tu clase modificada */
 .preview-page {
     width: 210px;
     height: 297px;
     background: white;
-    border: 1px solid #999;
+    border: 1px solid #3f8efc;
     overflow: hidden;
-    
-    /* 1. Las sacamos del flujo flex para apilarlas */
+
     position: absolute; 
     bottom: 0;
     top: 0;
     right: 0;    
     left: 0;
     margin: auto;
-    
-    /* 2. Efecto de escalado y desplazamiento hacia la derecha */
-    /* Modifica el '30px' para dar más o menos separación hacia la derecha */
-    /* Modifica el '0.05' para controlar cuánto "crecen" o se achican */
+
     transform: 
         translateY(calc((var(--i) * 0.5rem)));
-        
-    /* 3. El orden de apilamiento (la primera abajo, la última arriba) */
+
     z-index: var(--i);
     
-    /* Opcional: suavizado si luego quieres ponerles transiciones */
     transform-origin: left center; 
     transition: transform 0.3s ease;
     box-shadow: 0 4px 12px rgba(0,0,0,.15);
@@ -258,17 +235,6 @@ body{
     background: rgba(63,142,252,.2);
     box-sizing: border-box;
 }
-
-/*
-.preview-component{
-    width: 100%;
-    height: fit-content;
-
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}*/
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
